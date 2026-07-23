@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TEDify V2 项目架构 · 团队版</title>
+  <style>
+    :root {
+      --raw-black: #07080a;
+      --raw-panel: #101216;
+      --raw-panel-2: #171a20;
+      --raw-line: #2b3038;
+      --raw-text: #f4f7fb;
+      --raw-muted: #aab3c2;
+      --raw-dim: #768194;
+      --raw-accent: #7c8cff;
+      --raw-cyan: #5ad7d1;
+      --raw-green: #69d391;
+      --raw-amber: #e8b86d;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --color-bg: var(--raw-black);
+      --color-surface: var(--raw-panel);
+      --color-surface-raised: var(--raw-panel-2);
+      --color-border: var(--raw-line);
+      --color-text: var(--raw-text);
+      --color-muted: var(--raw-muted);
+      --color-dim: var(--raw-dim);
+      --color-accent: var(--raw-accent);
+      --color-info: var(--raw-cyan);
+      --color-ok: var(--raw-green);
+      --color-warn: var(--raw-amber);
+
+      --card-bg: var(--color-surface);
+      --card-border: 1px solid var(--color-border);
+      --button-bg: var(--color-surface-raised);
+      --button-bg-hover: #202532;
+      --button-focus: 0 0 0 3px rgba(124, 140, 255, .35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+    a { color: inherit; }
+    .shell {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: var(--space-6);
+      border-right: 1px solid var(--color-border);
+      background: rgba(7, 8, 10, .94);
+    }
+    .brand {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      margin-bottom: var(--space-8);
+    }
+    .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-md);
+      background: var(--color-accent);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+    }
+    .brand strong { display: block; font-size: 15px; }
+    .brand span { display: block; color: var(--color-muted); font-size: 12px; }
+    nav {
+      display: grid;
+      gap: var(--space-2);
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--color-muted);
+      padding: 9px 10px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+    }
+    nav a:hover { background: var(--button-bg-hover); color: var(--color-text); }
+    nav a:focus-visible, button:focus-visible {
+      outline: none;
+      box-shadow: var(--button-focus);
+    }
+    main {
+      padding: var(--space-8);
+      max-width: 1280px;
+      width: 100%;
+    }
+    .hero {
+      padding: var(--space-8) 0 var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-8);
+    }
+    .eyebrow {
+      color: var(--color-info);
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 0 var(--space-3);
+    }
+    h1 {
+      font-size: 44px;
+      line-height: 1.08;
+      margin: 0;
+      max-width: 920px;
+      letter-spacing: 0;
+    }
+    .hero p {
+      color: var(--color-muted);
+      font-size: 18px;
+      max-width: 880px;
+      margin: var(--space-4) 0 0;
+    }
+    section { margin: 0 0 var(--space-12); }
+    h2 {
+      font-size: 26px;
+      line-height: 1.2;
+      margin: 0 0 var(--space-4);
+      letter-spacing: 0;
+    }
+    h3 {
+      font-size: 17px;
+      margin: 0 0 var(--space-3);
+      letter-spacing: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5, 20px);
+      min-width: 0;
+    }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .muted { color: var(--color-muted); }
+    .dim { color: var(--color-dim); }
+    .tagrow { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+    .tag {
+      border: 1px solid var(--color-border);
+      color: var(--color-muted);
+      background: #0c0e12;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(120px, 1fr));
+      gap: var(--space-3);
+      overflow-x: auto;
+      padding-bottom: var(--space-2);
+    }
+    .node {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      min-height: 128px;
+      position: relative;
+    }
+    .node::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      width: 14px;
+      height: 1px;
+      background: var(--color-border);
+    }
+    .node:last-child::after { display: none; }
+    .node b { display: block; font-size: 14px; margin-bottom: var(--space-2); }
+    .node span { color: var(--color-muted); font-size: 13px; }
+    .code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+      background: #0a0c10;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      color: #d8e0ee;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--color-muted);
+    }
+    .list li { margin: 6px 0; }
+    .matrix {
+      display: grid;
+      grid-template-columns: 220px repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .cell {
+      padding: var(--space-4);
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      min-height: 76px;
+    }
+    .cell:nth-child(5n) { border-right: none; }
+    .cell.header {
+      background: var(--color-surface-raised);
+      color: var(--color-text);
+      font-weight: 700;
+    }
+    .cell small { color: var(--color-muted); display: block; margin-top: 4px; }
+    .accent { color: var(--color-accent); }
+    .ok { color: var(--color-ok); }
+    .warn { color: var(--color-warn); }
+    footer {
+      color: var(--color-dim);
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-6) 0;
+      font-size: 13px;
+    }
+    @media (max-width: 920px) {
+      .shell { display: block; }
+      .side {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+      nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      main { padding: var(--space-4); }
+      h1 { font-size: 34px; }
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+      .matrix { grid-template-columns: 1fr; }
+      .cell { border-right: none; }
+      .cell:nth-child(5n) { border-right: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="mark">T</div>
+        <div>
+          <strong>TEDify V2</strong>
+          <span>团队架构视图</span>
+        </div>
+      </div>
+      <nav aria-label="页面导航">
+        <a href="#overview">总体架构</a>
+        <a href="#frontend">前端架构</a>
+        <a href="#backend">后端架构</a>
+        <a href="#models">数据模型</a>
+        <a href="#scoring">评分模型</a>
+        <a href="#repo">仓库协作</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero" id="overview">
+        <p class="eyebrow">Internal Architecture</p>
+        <h1>个人口述表达教练，从一次报告升级为连续训练系统。</h1>
+        <p>本页给团队成员对齐当前项目架构：用户画像、基线测试、口述分析、评分建模、训练任务、进步流、前后端边界和统一仓库协作。</p>
+      </header>
+
+      <section>
+        <h2>一、系统主链路</h2>
+        <div class="flow" aria-label="系统主链路">
+          <div class="node"><b>1. 训练目标</b><span>选择公开演讲、闲聊、会议表达、面试、路演等方向。</span></div>
+          <div class="node"><b>2. 用户画像</b><span>记录场景、听众、痛点、自评、表达频率和训练优先级。</span></div>
+          <div class="node"><b>3. 基线测试</b><span>30 到 60 秒口述测试，形成初始表达向量。</span></div>
+          <div class="node"><b>4. 口述分析</b><span>规则分析器和大模型共同输出结构化诊断。</span></div>
+          <div class="node"><b>5. 训练任务</b><span>每个问题绑定训练方向、练习方式和完成标准。</span></div>
+          <div class="node"><b>6. 二次口述</b><span>用户按任务重讲，同一场景形成对照样本。</span></div>
+          <div class="node"><b>7. 进步流</b><span>更新画像、历史趋势和下一轮训练路径。</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>二、架构分层</h2>
+        <div class="grid">
+          <article class="card span-3">
+            <h3>体验层</h3>
+            <p class="muted">负责团队可见的产品流程：画像、测试、报告、训练计划、进步趋势。</p>
+            <div class="tagrow"><span class="tag">Web App</span><span class="tag">Report UI</span><span class="tag">Progress UI</span></div>
+          </article>
+          <article class="card span-3">
+            <h3>业务层</h3>
+            <p class="muted">维护训练会话、用户画像、口述尝试、分析报告和训练任务。</p>
+            <div class="tagrow"><span class="tag">Session</span><span class="tag">Profile</span><span class="tag">Attempt</span></div>
+          </article>
+          <article class="card span-3">
+            <h3>智能层</h3>
+            <p class="muted">规则引擎、大模型分析、评分模型、训练任务匹配和来源约束。</p>
+            <div class="tagrow"><span class="tag">Rubric</span><span class="tag">LLM</span><span class="tag">Curriculum</span></div>
+          </article>
+          <article class="card span-3">
+            <h3>数据层</h3>
+            <p class="muted">保存画像、历史尝试、报告、训练任务、评分版本和训练材料索引。</p>
+            <div class="tagrow"><span class="tag">SQLite/Postgres</span><span class="tag">JSON Schema</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="frontend">
+        <h2>三、前端架构</h2>
+        <div class="grid">
+          <article class="card span-6">
+            <h3>页面模块</h3>
+            <ul class="list">
+              <li><span class="accent">Goal Setup</span>：训练方向、场景、听众、时长、痛点选择。</li>
+              <li><span class="accent">Baseline Test</span>：30 到 60 秒测试题、文本输入、转写结果确认。</li>
+              <li><span class="accent">Analysis Workspace</span>：展示结构、连贯性、关键词、场景适配等诊断。</li>
+              <li><span class="accent">Training Plan</span>：每个问题对应训练方向、练习方式、完成标准。</li>
+              <li><span class="accent">Progress Stream</span>：按时间线展示每次口述、分数变化、下一轮目标。</li>
+              <li><span class="accent">Team Debug View</span>：团队内部查看 JSON、评分权重、prompt 版本和模型输出。</li>
+            </ul>
+          </article>
+          <article class="card span-6">
+            <h3>前端状态边界</h3>
+            <div class="code">Client State
+├─ activeGoalId
+├─ activeSessionId
+├─ draftTranscript
+├─ selectedScenario
+├─ pendingAnalysis
+└─ reportViewMode
+
+Server State
+├─ UserProfile
+├─ SpeechAttempt
+├─ AnalysisReport
+├─ TrainingAssignment
+└─ ProgressSnapshot</div>
+          </article>
+          <article class="card span-4">
+            <h3>交互原则</h3>
+            <p class="muted">前端不让用户面对空白 prompt，而是用目标、场景、时长和示例题引导输入。</p>
+          </article>
+          <article class="card span-4">
+            <h3>报告原则</h3>
+            <p class="muted">报告页面先给结论，再给证据摘录，最后给可执行训练任务。</p>
+          </article>
+          <article class="card span-4">
+            <h3>团队调试</h3>
+            <p class="muted">内部视图暴露 schema、模型版本、评分版本和任务映射，便于多人协作。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="backend">
+        <h2>四、后端架构</h2>
+        <div class="grid">
+          <article class="card span-7">
+            <h3>服务模块</h3>
+            <div class="code">API Layer
+├─ POST /api/profile
+├─ POST /api/baseline
+├─ POST /api/attempts
+├─ POST /api/analyze
+├─ GET  /api/reports/:id
+└─ GET  /api/progress/:profileId
+
+Domain Services
+├─ ProfileService
+├─ AttemptService
+├─ AnalysisOrchestrator
+├─ RuleScoringEngine
+├─ LlmAnalysisAdapter
+├─ TrainingPlanner
+├─ ProgressEngine
+└─ SourceRegistry</div>
+          </article>
+          <article class="card span-5">
+            <h3>分析编排</h3>
+            <ul class="list">
+              <li>先跑规则分析：字数、句长、缓冲词、重复、请求位置、结构标记。</li>
+              <li>再跑大模型分析：语义连贯、听众负担、场景适配、表达目标达成度。</li>
+              <li>合并为统一 JSON 报告，不让模型自由输出页面文案。</li>
+              <li>训练任务只从任务库和来源注册表中匹配，不直接凭空生成。</li>
+            </ul>
+          </article>
+          <article class="card span-4">
+            <h3>LLM Adapter</h3>
+            <p class="muted">封装模型、prompt、JSON schema 校验、重试、成本记录和模型版本。</p>
+          </article>
+          <article class="card span-4">
+            <h3>Rule Engine</h3>
+            <p class="muted">提供稳定可测的基础指标，避免所有评分都依赖大模型主观判断。</p>
+          </article>
+          <article class="card span-4">
+            <h3>Progress Engine</h3>
+            <p class="muted">比较历次表达向量，生成趋势、训练优先级和下一轮任务难度。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="models">
+        <h2>五、核心数据模型</h2>
+        <div class="grid">
+          <article class="card span-6">
+            <h3>UserProfile</h3>
+            <div class="code">{
+  "profileId": "profile_001",
+  "goals": ["public_speaking", "meeting_expression"],
+  "scenario": "team_meeting",
+  "audience": "team_members",
+  "painPoints": ["topic_drift", "weak_call_to_action"],
+  "baselineVector": {
+    "clarity": 42,
+    "coherence": 38,
+    "structure": 45,
+    "confidenceProxy": 40
+  }
+}</div>
+          </article>
+          <article class="card span-6">
+            <h3>SpeechAttempt</h3>
+            <div class="code">{
+  "attemptId": "attempt_001",
+  "profileId": "profile_001",
+  "sessionId": "session_001",
+  "round": 1,
+  "inputType": "transcript",
+  "transcript": "...",
+  "targetDurationSec": 60,
+  "createdAt": "..."
+}</div>
+          </article>
+          <article class="card span-6">
+            <h3>AnalysisReport</h3>
+            <div class="code">{
+  "reportId": "report_001",
+  "attemptId": "attempt_001",
+  "rubricVersion": "rubric-v0",
+  "scores": {},
+  "evidence": [],
+  "issues": [],
+  "trainingAssignments": [],
+  "nextAttemptPrompt": "..."
+}</div>
+          </article>
+          <article class="card span-6">
+            <h3>TrainingAssignment</h3>
+            <div class="code">{
+  "assignmentId": "train_001",
+  "issueId": "issue_topic_late",
+  "direction": "thesis_first",
+  "drill": "15秒三句话开场",
+  "successCriteria": [
+    "第一句出现主张",
+    "最后一句出现请求"
+  ]
+}</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="scoring">
+        <h2>六、评分与关键词模型</h2>
+        <div class="matrix" role="table" aria-label="评分模型矩阵">
+          <div class="cell header">评分层</div>
+          <div class="cell header">目标</div>
+          <div class="cell header">规则指标</div>
+          <div class="cell header">大模型判断</div>
+          <div class="cell header">输出</div>
+
+          <div class="cell">清晰度</div>
+          <div class="cell">听众能快速知道你要说什么</div>
+          <div class="cell">主张出现位置、标题句、行动请求</div>
+          <div class="cell">核心观点是否可复述</div>
+          <div class="cell">clarityScore + 证据摘录</div>
+
+          <div class="cell">连贯性</div>
+          <div class="cell">句子和段落能顺着走</div>
+          <div class="cell">连接词、重复、主题切换、指代</div>
+          <div class="cell">语义承接、跳跃、听众负担</div>
+          <div class="cell">coherenceScore + 断点列表</div>
+
+          <div class="cell">结构</div>
+          <div class="cell">问题、原因、例子、请求分层</div>
+          <div class="cell">段落数、结构标记、结尾位置</div>
+          <div class="cell">表达骨架是否完整</div>
+          <div class="cell">structureScore + 重组建议</div>
+
+          <div class="cell">场景适配</div>
+          <div class="cell">符合公开演讲、闲聊或会议目标</div>
+          <div class="cell">时长、听众、语气、请求类型</div>
+          <div class="cell">是否适合当前训练方向</div>
+          <div class="cell">fitScore + 场景化任务</div>
+
+          <div class="cell">记忆点</div>
+          <div class="cell">听完后能留下一个核心句</div>
+          <div class="cell">关键词重复、压缩句、结尾钩子</div>
+          <div class="cell">是否有可传播表达</div>
+          <div class="cell">hookScore + 下一轮金句练习</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>七、训练任务映射</h2>
+        <div class="grid">
+          <article class="card span-4">
+            <h3>问题识别</h3>
+            <p class="muted">每个 issue 必须包含问题类型、证据摘录、影响说明和所属评分维度。</p>
+          </article>
+          <article class="card span-4">
+            <h3>任务匹配</h3>
+            <p class="muted">根据 issue.direction 从训练任务库匹配，而不是让模型随意给建议。</p>
+          </article>
+          <article class="card span-4">
+            <h3>进步更新</h3>
+            <p class="muted">二次口述后更新同一维度分数，记录该任务是否真的改善表达。</p>
+          </article>
+        </div>
+        <div class="code" style="margin-top:16px">Issue -> Direction -> Drill -> Success Criteria -> Next Attempt Prompt -> Progress Snapshot</div>
+      </section>
+
+      <section id="repo">
+        <h2>八、统一仓库协作架构</h2>
+        <div class="grid">
+          <article class="card span-8">
+            <h3>建议仓库结构</h3>
+            <div class="code">tedify-v2/
+├─ apps/
+│  └─ web/                 # 团队和用户共用 Web App
+├─ packages/
+│  ├─ core/                # 类型、schema、领域对象
+│  ├─ analyzer/            # 规则评分与文本特征
+│  ├─ llm/                 # LLM adapter、prompt、JSON 校验
+│  ├─ curriculum/          # 训练任务库与来源注册表
+│  ├─ progress/            # 进步流和历史对比
+│  └─ eval/                # 黄金样例和回归测试
+├─ docs/
+│  ├─ ARCHITECTURE.md
+│  ├─ RUBRIC.md
+│  └─ API-CONTRACTS.md
+└─ tests/
+   ├─ fixtures/
+   └─ integration/</div>
+          </article>
+          <article class="card span-4">
+            <h3>协作边界</h3>
+            <ul class="list">
+              <li>前端只依赖 API contract 和 schema。</li>
+              <li>后端只返回结构化报告，不返回拼好的页面。</li>
+              <li>评分模型版本化，报告必须记录 rubricVersion。</li>
+              <li>训练任务库独立维护，可单独评审。</li>
+              <li>每个代理只改自己负责的 package。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        TEDify V2 team architecture page. Built as an internal alignment artifact for the current personal speech coach project.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

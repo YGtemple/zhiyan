@@ -1,0 +1,159 @@
+{
+  "version": "profile-v0-cn-readable",
+  "description": "TEDify V2 第一步信息获取用户画像字段。字段 id 保持英文，便于后端和前端使用；label、purpose、affects 使用中文，便于团队阅读。",
+  "fields": [
+    {
+      "id": "training_goal",
+      "label": "这次主要想练哪类表达",
+      "type": "single_select",
+      "required": true,
+      "firstScreen": true,
+      "purpose": "决定训练场景、评分权重、基线测试题和训练模板。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "readiness_stage",
+      "label": "现在准备到哪一步",
+      "type": "single_select",
+      "required": true,
+      "firstScreen": true,
+      "purpose": "判断用户需要选题、大纲、稿件修改还是表达练习。",
+      "affects": ["training", "baseline", "feedback"]
+    },
+    {
+      "id": "audience_type",
+      "label": "这次主要讲给谁听",
+      "type": "single_select",
+      "required": true,
+      "firstScreen": true,
+      "purpose": "决定听众适配、说服方式、例子和证据类型。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "time_horizon",
+      "label": "这次表达什么时候要用",
+      "type": "single_select",
+      "required": true,
+      "firstScreen": true,
+      "purpose": "区分救急模式和长期训练模式。",
+      "affects": ["training", "feedback", "baseline"]
+    },
+    {
+      "id": "target_duration",
+      "label": "这次大概需要讲多久",
+      "type": "single_select",
+      "required": true,
+      "firstScreen": true,
+      "purpose": "决定基线长度、结构密度和压缩训练要求。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "primary_pain_points",
+      "label": "最想先改善哪一项",
+      "type": "multi_select",
+      "required": false,
+      "firstScreen": true,
+      "purpose": "对齐用户动机，决定第一轮反馈优先级；最多选 2 个。",
+      "affects": ["training", "feedback", "record"]
+    },
+    {
+      "id": "feedback_style",
+      "label": "希望教练怎么反馈",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定反馈语气、密度和格式。",
+      "affects": ["feedback"]
+    },
+    {
+      "id": "material_type",
+      "label": "有什么材料可以用来训练",
+      "type": "multi_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定是否走稿件修改、大纲提取、口述对比或无材料基线。",
+      "affects": ["training", "baseline", "privacy"]
+    },
+    {
+      "id": "material_upload_intent",
+      "label": "希望材料用来做什么",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "明确材料是用来提取大纲、修改文字、对比口述还是生成基线题。",
+      "affects": ["training", "baseline", "privacy"]
+    },
+    {
+      "id": "privacy_sensitivity",
+      "label": "材料是否包含不适合外传的信息",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "在上传前建立隐私预期，必要时提示用户脱敏。",
+      "affects": ["privacy", "frontend_behavior", "record"]
+    },
+    {
+      "id": "support_need",
+      "label": "现在更需要哪种帮助",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "区分写作助教、表达教练和完整训练闭环；可由准备阶段推断。",
+      "affects": ["training", "feedback"]
+    },
+    {
+      "id": "desired_audience_action",
+      "label": "听完后希望对方做什么或相信什么",
+      "type": "single_select_plus_text",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "把听众信息转化为明确表达目标。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "audience_knowledge_level",
+      "label": "听众对主题熟悉吗",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定上下文解释、术语使用和证据密度。",
+      "affects": ["scoring", "training", "feedback"]
+    },
+    {
+      "id": "qna_expected",
+      "label": "是否会有提问、追问或答辩",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定是否加入答辩和追问应对训练。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "language_context",
+      "label": "主要用什么语言表达",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定是否加入文本层面的语言准确性和自然度评估。",
+      "affects": ["scoring", "training", "baseline"]
+    },
+    {
+      "id": "stakes_level",
+      "label": "这次对你有多重要",
+      "type": "single_select",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "决定反馈严格度、风险提示和任务密度。",
+      "affects": ["feedback", "training", "record"]
+    },
+    {
+      "id": "topic_brief",
+      "label": "如果已有主题，请用一句话写下来",
+      "type": "short_text",
+      "required": false,
+      "firstScreen": false,
+      "purpose": "为基线测试和相关性判断提供上下文。",
+      "affects": ["scoring", "training", "baseline"]
+    }
+  ]
+}
