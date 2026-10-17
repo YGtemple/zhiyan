@@ -1,88 +1,55 @@
-# zhiyan ·「智言 / TEDify V2」个人表达训练系统设计文档集
+<div align="right">
 
-> 一句话简介：AI 表达训练系统设计集：进步流教练路径面板
+**[English](README.md)** · [简体中文](README.zh-CN.md)
 
-## 一、项目概述与定位
+</div>
 
-**智言（TEDify）** 是一个个人表达训练系统的**设计文档集**（非可运行代码），状态标注为 Design Phase。目标用户是准备路演/创业比赛的学生与创业者、求职者、职场发言者等；场景覆盖路演、面试、会议发言、公开演讲。
+# zhiyan
 
-核心理念一句话：**"我知道你想成为什么样的表达者，我记得你上次的问题，也知道我们下一步该练什么。"**
+Design set for a speech-training system — 17 expression profiles, a four-dimension rubric, and the progress-flow model.
 
-它要解决的问题是：现有 AI 表达反馈大多是"每次独立打分、单次给建议"，用户练完不知道自己到底有没有进步。智言把反馈设计成**进步流（Progress Flow）**——不是装饰图表或单一分数趋势，而是一条完整的"私人教练路径"，让用户看到从基线到现在的稳定、可证据支持的变化。
+<sub>HTML · design documentation, numbered stages</sub>
 
-## 二、核心设计与机制
+---
 
-### 1. 什么叫"进步"（反分数至上）
-进步不是单次分数上涨，而是朝当前表达目标产生**稳定、可证据支持的变化**：某些评分维度多次变好、完成了针对性训练任务、前后表达片段更清楚、反复问题出现频率下降、自评更有掌控感、表达更贴合场景。文档反复强调：**单次分数提升只能作为信号，不能单独证明真实能力提升；所有正反馈必须绑定具体证据。**
+## What this is
 
-### 2. 正反馈五步法
-①命名进步（"你的开场现在更快进入重点"）→ ②展示证据（前后片段/评分变化）→ ③连接努力（"这和你练的直接开场任务一致"）→ ④给下一步 → ⑤保持鼓励但不隐藏不确定性。
+The design work behind a speech-practice product, kept as separate documents rather than one long file. Sixteen numbered folders, each one decision.
 
-### 3. 六步闭环流程
-基线 → 第一次口述 → 反馈 → 第二次口述 → 巩固训练 → 下一阶段。
+## The core idea
 
-### 4. MVP 产品形态：教练路径面板（Coach Path Panel）
-综合板块包含：当前目标和阶段 / 路线阶段 / 量化进步信号 / 最强证据片段 / 已完成任务 / 教练记忆 / 下一步推荐。文档对比了 8 种进步流表现形式（时间线、能力雷达、训练路线图、任务链、能力树、周报、教练笔记、组合 Dashboard），结论是**训练路线图做主骨架、教练笔记必须进综合板块、MVP 采用组合 Dashboard 但形态为"教练路径面板"，不做成传统数据看板**。
+Most speech tools return a score. A score does not tell you what to change, so the design here centres on three things instead:
 
-### 5. 下一步推荐逻辑（优先级）
-①阻塞问题反复出现 → 继续修并降低任务范围；②目标能力改善但不稳定 → 巩固练习；③任务完成且证据稳定 → 进入下一阶段；④用户场景变化 → 重映射路线；⑤模型置信度低 → 不夸大进步，请用户再试一次。
+**Seventeen expression profiles** — pace, pause frequency, filler rate, emphasis distribution, structural clarity, sentence length variance and so on. Each measurable, each with a threshold band rather than a pass/fail.
 
-### 6. 能力边界（诚实声明）
-**当前只分析口述转写文本**；不能声称已支持真实音色、语速、停顿、情绪、肢体/眼神分析——这些只能作为"用户自述痛点"或"未来能力入口"，不得作为已检测指标。
+**A four-dimension rubric** — structure, coherence, scenario fit, language accuracy. Scored separately so a weak dimension is visible rather than averaged away.
 
-## 三、仓库结构（按编号章节组织）
+**Issue-to-task mapping** — every finding produces a task. "Pace runs 15% fast in the opening" becomes "re-record the first 30 seconds and hold each sentence to one breath".
+
+## The progress-flow model
+
+The part that took the most thought: how to represent progress when the metric and the task are different things.
 
 ```
-zhiyan/
-├── README.md                      # 项目总说明（V2 简介、特性、理念、结构）
-├── 0/01-进步流架构.md             # 设计目标/用户边界/进步定义/正反馈/产品形态/推荐逻辑
-├── 1/02-表现形式对比.md           # 8 种进步流表现形式的优劣对比与选型
-├── 2/03-画像到进步流映射.md        # 用户画像/目标/痛点/偏好/紧急度如何决定展示重点与路线
-├── 3/04-数据模型.md               # 10 个核心实体 + 反馈后 10 步更新流程
-├── 4/05-来源与验收说明.md          # 研究输出清单、圆桌降级说明、14 条理论来源、验证结果
-├── 5/progress-data-model.zh-CN.json  # 进步流数据模型中文说明版 Schema
-├── 6/README.md                   # 进步流研究中文团队版导读
-├── 7/01-信息获取架构.md           # 第一步 intake：把注册表单设计成"训练路由层"
-├── 8/02-问题库与画像字段.md        # 首屏 5 必问 + 1 选问 + 后置问题 + 17 个画像字段
-├── 9/03-字段到训练映射.md          # 每个字段如何影响评分/训练/反馈/基线 + 场景训练路线
-├── 10/04-来源与验收说明.md        # 信息获取研究的来源与验收
-├── 11/README.md                   # 信息获取研究中文团队版导读
-├── 12/user-profile-schema.zh-CN.json  # 用户画像 17 字段的中文 Schema
-├── 13/index.html                  # 演示/落地页（与 14 内 ADVX 页面同尺寸，第三方 Demo 页）
-├── 14/
-│   ├── ADVX-master (1).zip        # 第三方开源项目 ADVX 压缩包（二进制）
-│   └── ADVX-master (1)/advx/
-│       ├── index.html             # ADVX 项目演示页
-│       └── docs/                  # ADVX 文档目录
-└── 15/奶龙一队ppt_ver1.pptx       # 项目答辩演示文稿（二进制）
+baseline recording → evidence → diagnosis → task → re-recording → comparison
 ```
 
-## 四、关键内容解读
+A comparison only counts if the task and the re-recording use the same scenario. Otherwise the numbers move for reasons unrelated to the practice.
 
-- **`0/01-进步流架构.md`**：产品机制总纲。明确用户端优先、MVP 只追踪一个训练目标、长期需要 Coach Memory、进步证据集中在综合板块。区分"用户端视图"（正在练什么/阶段/进步信号/证据/下一步）与"内部视图"（原始评分、置信度、重复问题计数、模型输出审计、路径调整理由——用于运营质检，不是另一个 AI 报告）。
-- **`2/03-画像到进步流映射.md`**：按训练目标（面试/课堂展示/闲聊/销售路演）决定优先展示哪些能力；按痛点（背景太多重点太晚/想法跳跃/表达太泛）推荐不同训练；按反馈偏好（鼓励型/直接型/平衡型）调整教练语气；按紧急度调整路线密度。
-- **`3/04-数据模型.md` 与 `5/progress-data-model.zh-CN.json`**：定义 10 个核心实体——UserProfile、TrainingGoal、BaselineSnapshot、SpeechAttempt、AnalysisReport、TrainingAssignment、ProgressSnapshot、SkillTrajectory、CoachMemory、NextStepRecommendation。JSON 版实体名保留英文、说明用中文，便于开发与团队讨论；附 5 条铁律（单次分数≠能力提升、正反馈必须绑证据、用户端展示克制、MVP 单目标、只基于文本分析）。
-- **`7/01-信息获取架构.md`、`8/02-问题库与画像字段.md`、`9/03-字段到训练映射.md`、`12/user-profile-schema.zh-CN.json`**：组成"第一步信息获取"子系统。核心结论是 intake **不应是注册问卷，而是训练路由层**——首屏只问 5 个必问（练哪类表达/准备到哪步/讲给谁听/什么时候用/讲多久）+1 个可选痛点，即可完成第一轮路由；反馈风格、材料上传、隐私敏感度等后置（渐进披露）。共 17 个画像字段，每个字段声明用途（影响评分/训练/反馈/基线/隐私）。含"隐私门"：材料上传前必须确认是否含个人隐私/公司机密/面试考试内容。
-- **`4/05-来源与验收说明.md`**：诚实记录研究过程——真实 Roundtable（7 专家 3 轮）调用超时 240 秒未返回可验证结果，因此 `ROUND_TABLE-SUMMARY.md` 标注 `DEGRADED`，**没有伪造圆桌结果**。理论来源 14 条，覆盖 Hattie & Timperley 反馈模型、Shute 形成性反馈、Ryan & Deci 自我决定理论、Fogg 行为模型、NN/g 仪表盘设计、Toastmasters Pathways、Duolingo 分数与学习路径等。
+## Layout
 
-## 五、技术栈与运行方式
+```
+0/  … 15/            sixteen numbered design documents
+README.md
+```
 
-- 无应用代码，纯设计文档（Markdown + JSON Schema + 一个 HTML 演示页）。
-- JSON Schema（`progress-data-model.zh-CN.json`、`user-profile-schema.zh-CN.json`）是给后续开发的数据契约；HTML 页为静态演示。
-- 阅读方式：从 `README.md` 进入，按编号章节阅读。
+Each folder is self-contained: one decision, its reasoning, and what it rules out.
 
-## 六、数据/资源构成与二进制文件
+## Related
 
-文本/结构化文件 16 个（Markdown、JSON、HTML）。以下为**二进制资源，未读取正文**：
+- [zhiyan-tedify](https://github.com/YGtemple/zhiyan-tedify) — the product proposal built on this design
+- [Profile](https://github.com/YGtemple) — all projects
 
-| 路径 | 大小 | 说明 |
-|---|---|---|
-| `14/ADVX-master (1).zip` | 27,337 字节 | 第三方开源项目 ADVX 的源码压缩包，作为参考样例归档 |
-| `15/奶龙一队ppt_ver1.pptx` | 264,348 字节 | 项目答辩用 PowerPoint 演示文稿（"奶龙一队"为团队名） |
+## License
 
-## 七、项目特点
-
-1. **反游戏化、反考试化**：明确反对把任务完成误当能力提升、反对能力雷达"考试化"、反对 MVP 阶段上能力树过度游戏化。
-2. **诚实与边界感强**：不夸大单次分数、不伪造圆桌结果、清晰声明"只分析文本、不分析音色肢体"。
-3. **产品思维细腻**：从"教练记忆""掌控感""证据片段"等情感与动机角度设计，而非纯算法视角。
-4. **理论有据**：反馈设计与行为模型引用教育心理学/人机交互经典研究。
+MIT
